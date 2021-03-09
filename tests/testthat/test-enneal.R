@@ -29,7 +29,7 @@ x0_scalar <- 0
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_scalar,
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_scalar,
@@ -57,7 +57,7 @@ expect_equal(
     "eta",
     "theta",
     "num_samp_vect",
-    "neg_log_obj_func",
+    "neg_log_cost_func",
     "temp",
     "save_theta",
     "theta_mat")
@@ -114,7 +114,7 @@ expect_equal(
 )
 
 expect_equal(
-  chain$neg_log_obj_func,
+  chain$neg_log_cost_func,
   unnorm_neg_log_gauss_dens
 )
 
@@ -144,7 +144,7 @@ expect_equal(
 expect_error(
   chain <- do_mh_sampling_at_temp("cannot_use_strings",
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_scalar,
@@ -156,7 +156,7 @@ expect_error(
 
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_scalar,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_scalar,
@@ -173,13 +173,13 @@ expect_error(
                                   mu=mu_scalar,
                                   invCovMat=invCovMat_scalar,
                                   save_theta=TRUE),
-  "neg_log_obj_func must be input for new chains"
+  "neg_log_cost_func must be input for new chains"
 )
 
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_scalar,
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   prop_scale=0.1,
                                   mu=mu_scalar,
                                   invCovMat=invCovMat_scalar,
@@ -189,7 +189,7 @@ expect_error(
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_scalar,
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   mu=mu_scalar,
                                   invCovMat=invCovMat_scalar,
@@ -200,7 +200,7 @@ expect_error(
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_scalar,
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   prop_scale=c(0.1,0.2),
                                   mu=mu_scalar,
@@ -214,11 +214,11 @@ infinity_func <- function(x){Inf}
 expect_error(
   chain <- do_mh_sampling_at_temp(0,
                                   num_samp=400,
-                                  neg_log_obj_func=infinity_func,
+                                  neg_log_cost_func=infinity_func,
                                   temp=2,
                                   prop_scale=0.1,
                                   save_theta=TRUE),
-  paste0("The negative log objective function is not finite for the input ",
+  paste0("The negative log cost function is not finite for the input ",
          "initialization vector theta0")
 )
 
@@ -253,7 +253,7 @@ expect_equal(
     "eta",
     "theta",
     "num_samp_vect",
-    "neg_log_obj_func",
+    "neg_log_cost_func",
     "temp",
     "save_theta",
     "theta_mat")
@@ -310,7 +310,7 @@ expect_equal(
 )
 
 expect_equal(
-  chain2$neg_log_obj_func,
+  chain2$neg_log_cost_func,
   unnorm_neg_log_gauss_dens
 )
 
@@ -333,11 +333,11 @@ expect_equal(
 # is in fact thrown.
 expect_error(
   chain2 <- do_mh_sampling_at_temp(chain,
-                                   neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                    mu=mu_scalar,
                                    invCovMat=invCovMat_scalar),
 
-  "neg_log_log_obj_func should not be input for continuing chains."
+  "neg_log_cost_func should not be input for continuing chains."
 )
 
 expect_error(
@@ -358,7 +358,7 @@ x0_vector <- c(0,0)
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_vector,
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_vector,
@@ -385,7 +385,7 @@ expect_equal(
     "eta",
     "theta",
     "num_samp_vect",
-    "neg_log_obj_func",
+    "neg_log_cost_func",
     "temp",
     "save_theta",
     "theta_mat")
@@ -442,7 +442,7 @@ expect_equal(
 )
 
 expect_equal(
-  chain$neg_log_obj_func,
+  chain$neg_log_cost_func,
   unnorm_neg_log_gauss_dens
 )
 
@@ -467,7 +467,7 @@ expect_equal(
 expect_error(
   chain <- do_mh_sampling_at_temp("cannot_use_strings",
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_vector,
@@ -479,7 +479,7 @@ expect_error(
 
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_vector,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_vector,
@@ -496,13 +496,13 @@ expect_error(
                                   mu=mu_vector,
                                   invCovMat=invCovMat_vector,
                                   save_theta=TRUE),
-  "neg_log_obj_func must be input for new chains"
+  "neg_log_cost_func must be input for new chains"
 )
 
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_vector,
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   prop_scale=0.1,
                                   mu=mu_vector,
                                   invCovMat=invCovMat_vector,
@@ -512,7 +512,7 @@ expect_error(
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_vector,
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   mu=mu_vector,
                                   invCovMat=invCovMat_vector,
@@ -523,7 +523,7 @@ expect_error(
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_vector,
                                   num_samp=400,
-                                  neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                  neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                   temp=2,
                                   prop_scale=c(0.1,0.2,0.3),
                                   mu=mu_vector,
@@ -562,7 +562,7 @@ expect_equal(
     "eta",
     "theta",
     "num_samp_vect",
-    "neg_log_obj_func",
+    "neg_log_cost_func",
     "temp",
     "save_theta",
     "theta_mat")
@@ -619,7 +619,7 @@ expect_equal(
 )
 
 expect_equal(
-  chain2$neg_log_obj_func,
+  chain2$neg_log_cost_func,
   unnorm_neg_log_gauss_dens
 )
 
@@ -642,11 +642,11 @@ expect_equal(
 # is in fact thrown.
 expect_error(
   chain2 <- do_mh_sampling_at_temp(chain,
-                                   neg_log_obj_func=unnorm_neg_log_gauss_dens,
+                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
                                    mu=mu_vector,
                                    invCovMat=invCovMat_vector),
 
-  "neg_log_log_obj_func should not be input for continuing chains."
+  "neg_log_cost_func should not be input for continuing chains."
 )
 
 expect_error(

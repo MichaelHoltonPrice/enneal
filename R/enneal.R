@@ -10,7 +10,7 @@
 #' @param init The initializing object (either a parameter vector or a chain
 #'   created by a previous call to do_mh_sampling_at_temp).
 #' @param num_samp The number of samples to make.
-#' @param neg_log_obj_func The function that calculates the negative log of the
+#' @param neg_log_cost_func The function that calculates the negative log of the
 #'   function being sampled.
 #' @param temp The temperature
 #' @param prop_scale The standard deviation(s) to use for the proposal
@@ -19,12 +19,12 @@
 #' @param save_theta Whether or not to save and return the accepted parameter
 #'   values (assumed False if not input). Cannot be over-ridden for continuing
 #'   chains.
-#' @param ... Variables required by neg_log_obj_func.
+#' @param ... Variables required by neg_log_cost_func.
 #' @return A list-like object of class "mh_chain" with sampling information
 #' @export
 do_mh_sampling_at_temp <- function(init,
                            num_samp=NA,
-                           neg_log_obj_func=NA,
+                           neg_log_cost_func=NA,
                            temp=NA,
                            prop_scale=NA,
                            save_theta=NA,
@@ -48,8 +48,8 @@ do_mh_sampling_at_temp <- function(init,
       stop("num_samp must be input for new chains")
     }
 
-    if(class(neg_log_obj_func) != "function") {
-      stop("neg_log_obj_func must be input for new chains")
+    if(class(neg_log_cost_func) != "function") {
+      stop("neg_log_cost_func must be input for new chains")
     }
 
     if(is.na(temp)) {
@@ -81,9 +81,9 @@ do_mh_sampling_at_temp <- function(init,
     # For a new chain, calculate the starting negative log-likelihood and set
     # theta0 equal to the input parameter vector.
     theta0 <- init
-    eta0 <- neg_log_obj_func(theta0,...)
+    eta0 <- neg_log_cost_func(theta0,...)
     if (!is.finite(eta0)) {
-      stop(paste0("The negative log objective function is not finite for the ",
+      stop(paste0("The negative log cost function is not finite for the ",
                   "input initialization vector theta0"))
     }
 
@@ -99,10 +99,10 @@ do_mh_sampling_at_temp <- function(init,
     # function. It can be rest by directly editing the function inside the
     # mh_chain object outside the function. Allowing it to be reset seems likely
     # to cause mis-uses more often than it is needed.
-    if (class(neg_log_obj_func) != "function") {
-       neg_log_obj_func <- init$neg_log_obj_func
+    if (class(neg_log_cost_func) != "function") {
+       neg_log_cost_func <- init$neg_log_cost_func
     } else {
-      stop("neg_log_log_obj_func should not be input for continuing chains.")
+      stop("neg_log_cost_func should not be input for continuing chains.")
     }
 
     # For an existing chain, get eta0, theta0, eta_best, and theta_best from
@@ -171,7 +171,7 @@ do_mh_sampling_at_temp <- function(init,
   for(n in 1:num_samp) {
     # Create a new proposal parameter
     theta_prop <- theta + rnorm(length(theta))*prop_scale
-    eta_prop <- neg_log_obj_func(theta_prop,...)
+    eta_prop <- neg_log_cost_func(theta_prop,...)
 
     if(!is.finite(eta_prop)) {
       accept <- F
@@ -216,7 +216,7 @@ do_mh_sampling_at_temp <- function(init,
                    eta=eta,
                    theta=theta,
                    num_samp_vect=num_samp,
-                   neg_log_obj_func=neg_log_obj_func,
+                   neg_log_cost_func=neg_log_cost_func,
                    temp=temp,
                    save_theta=save_theta)
     if(save_theta) {
