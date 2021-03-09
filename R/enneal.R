@@ -218,7 +218,6 @@ do_mh_sampling_at_temp <- function(init,
                    num_samp_vect=num_samp,
                    neg_log_obj_func=neg_log_obj_func,
                    temp=temp,
-                   prop_scale=prop_scale,
                    save_theta=save_theta)
     if(save_theta) {
       output$theta_mat <- theta_mat
