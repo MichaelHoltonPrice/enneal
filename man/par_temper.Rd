@@ -35,8 +35,8 @@ length(temp_vect).}
 }
 \value{
 An object of class \code{par_temper} that consists of (a) chains (the
-  sampled chains) and (b) swap_mat, a matrix summarizing the results of the
-  swap attempts.
+  sampled chains), (b) swap_mat, a matrix summarizing the results of the
+  swap attempts, and (c) inputs, the original inputs to the function.
 }
 \description{
 Minimize an input cost function using parallel tempering. The cost function

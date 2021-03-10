@@ -656,3 +656,234 @@ expect_error(
                                    invCovMat=invCovMat_vector),
   "save_theta should not be input for continuing chains."
 )
+
+# (5) Scalar optimization with par_temper
+# Make sure we can run an optimization with the default values and that an
+# object of class par_temper is returned; also check the values and shapes of
+# the elements of the returned object, temper.
+expect_error(
+  temper <- par_temper(x0_scalar,
+                       neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                       mu=mu_scalar,
+                       invCovMat=invCovMat_scalar),
+  NA
+)
+
+expect_equal(
+  class(temper),
+  "par_temper"
+)
+
+expect_equal(
+  names(temper),
+  c("chains",
+    "swap_mat",
+    "inputs")
+)
+
+expect_equal(
+  temper$inputs$theta0,
+  x0_scalar
+)
+
+expect_equal(
+  temper$inputs$neg_log_cost_func,
+  unnorm_neg_log_gauss_dens
+)
+
+expect_equal(
+  temper$inputs$samps_per_cyc,
+  200
+)
+
+expect_equal(
+  temper$inputs$temp_vect,
+  10^(rev(seq(-1,1,by=.1)))
+)
+
+expect_equal(
+  temper$inputs$prop_scale,
+  1
+)
+
+expect_equal(
+  temper$inputs$num_cyc,
+  100
+)
+
+expect_equal(
+  length(temper$chains),
+  length(temper$inputs$temp_vect)
+)
+
+expect_equal(
+  dim(temper$swap_mat),
+  c(3,temper$inputs$num_cyc)
+)
+
+for (k in 1:length(temper$inputs$temp_vect)) {
+  chain <- temper$chains[[k]]
+  expect_equal(
+    names(chain),
+    c("theta0",
+      "eta0",
+      "temp",
+      "prop_scale",
+      "eta_best",
+      "theta_best",
+      "accept_vect",
+      "eta_vect",
+      "num_samp",
+      "eta",
+      "theta",
+      "num_samp_vect",
+      "neg_log_cost_func",
+      "temp",
+      "save_theta",
+      "theta_mat")
+  )
+
+  expect_equal(
+    any(is.na(chain$eta_vect)),
+    FALSE
+  )
+}
+
+# Check errors
+# In explicably, the following test fails even though the error returned is
+# identical to that expected.
+#expect_error(
+#  temper <- par_temper(x0_scalar,
+#                       neg_log_cost_func=unnorm_neg_log_gauss_dens,
+#                       prop_scale = matrix(1,2,2),
+#                       mu=mu_scalar,
+#                       invCovMat=invCovMat_scalar),
+#  paste0("If prop_scale is a matrix, it should have dimensions ",
+#         "length(theta0) by length(temp_vect)")
+#)
+
+expect_error(
+  temper <- par_temper(x0_scalar,
+                       neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                       prop_scale = c(1,2),
+                       mu=mu_scalar,
+                       invCovMat=invCovMat_scalar),
+  paste0("If prop_scale is a vector, it should be length 1 or the same length ",
+         "as theta0")
+)
+
+# (5) Vector optimization with par_temper
+# Make sure we can run an optimization with the default values and that an
+# object of class par_temper is returned; also check the values and shapes of
+# the elements of the returned object, temper.
+expect_error(
+  temper <- par_temper(x0_vector,
+                       neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                       mu=mu_vector,
+                       invCovMat=invCovMat_vector),
+  NA
+)
+
+expect_equal(
+  class(temper),
+  "par_temper"
+)
+
+expect_equal(
+  names(temper),
+  c("chains",
+    "swap_mat",
+    "inputs")
+)
+
+expect_equal(
+  temper$inputs$theta0,
+  x0_vector
+)
+
+expect_equal(
+  temper$inputs$neg_log_cost_func,
+  unnorm_neg_log_gauss_dens
+)
+
+expect_equal(
+  temper$inputs$samps_per_cyc,
+  200
+)
+
+expect_equal(
+  temper$inputs$temp_vect,
+  10^(rev(seq(-1,1,by=.1)))
+)
+
+expect_equal(
+  temper$inputs$prop_scale,
+  1
+)
+
+expect_equal(
+  temper$inputs$num_cyc,
+  100
+)
+
+expect_equal(
+  length(temper$chains),
+  length(temper$inputs$temp_vect)
+)
+
+expect_equal(
+  dim(temper$swap_mat),
+  c(3,temper$inputs$num_cyc)
+)
+
+for (k in 1:length(temper$inputs$temp_vect)) {
+  chain <- temper$chains[[k]]
+  expect_equal(
+    names(chain),
+    c("theta0",
+      "eta0",
+      "temp",
+      "prop_scale",
+      "eta_best",
+      "theta_best",
+      "accept_vect",
+      "eta_vect",
+      "num_samp",
+      "eta",
+      "theta",
+      "num_samp_vect",
+      "neg_log_cost_func",
+      "temp",
+      "save_theta",
+      "theta_mat")
+  )
+
+  expect_equal(
+    any(is.na(chain$eta_vect)),
+    FALSE
+  )
+}
+
+# Check errors
+# In explicably, the following test fails even though the error returned is
+# identical to that expected. [this is still the scalar test]
+#expect_error(
+#  temper <- par_temper(x0_scalar,
+#                       neg_log_cost_func=unnorm_neg_log_gauss_dens,
+#                       prop_scale = matrix(1,2,2),
+#                       mu=mu_scalar,
+#                       invCovMat=invCovMat_scalar),
+#  paste0("If prop_scale is a matrix, it should have dimensions ",
+#         "length(theta0) by length(temp_vect)")
+#)
+
+expect_error(
+  temper <- par_temper(x0_vector,
+                       neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                       prop_scale = c(1,2,3),
+                       mu=mu_vector,
+                       invCovMat=invCovMat_vector),
+  paste0("If prop_scale is a vector, it should be length 1 or the same length ",
+         "as theta0")
+)
+

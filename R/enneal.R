@@ -287,8 +287,8 @@ do_mh_sampling_at_temp <- function(init,
 #' @param ... Variables required by neg_log_cost_func
 #'
 #' @return An object of class \code{par_temper} that consists of (a) chains (the
-#'   sampled chains) and (b) swap_mat, a matrix summarizing the results of the
-#'   swap attempts.
+#'   sampled chains), (b) swap_mat, a matrix summarizing the results of the
+#'   swap attempts, and (c) inputs, the original inputs to the function.
 
 #' @author Michael Holton Price <MichaelHoltonPrice@@gmail.com>
 #'
@@ -301,11 +301,23 @@ par_temper <- function(theta0,
                        num_cyc=100,
                        ...) {
 
+  inputs <- list(theta0=theta0,
+                 neg_log_cost_func=neg_log_cost_func,
+                 samps_per_cyc=samps_per_cyc,
+                 temp_vect=temp_vect,
+                 prop_scale=prop_scale,
+                 num_cyc=num_cyc)
+
   chains = list()
   # prop_scale should be a scalar, a vector of length theta, or a matrix with
   # dimensions length theta x length temp_vect.
-  if (is.vector(prop_scale)) {
-    if(length(prop_scale) == 1) {
+  if(is.matrix(prop_scale)) {
+    if(!all(dim(prop_scale) == c(length(theta0),length(temp_vect)))) {
+      stop(paste0("If prop_scale is a matrix, it should have dimensions ",
+                  "length(theta0) by length(temp_vect)"))
+    }
+  } else {
+     if(length(prop_scale) == 1) {
       # A scalar
       prop_scale <- matrix(prop_scale,length(theta0),length(temp_vect))
     } else if (length(prop_scale) == length(theta0)) {
@@ -314,13 +326,6 @@ par_temper <- function(theta0,
       stop(paste0("If prop_scale is a vector, it should be length 1 or the ",
                   "same length as theta0"))
     }
-  } else if (is.matrix(prop_scale)) {
-    if(dim(prop_scale) != c(length(theta0),length(temp_vect))) {
-      stop(paste0("If prop_scale is a matrix, it should have dimensions ",
-                  "length(theta0) by length(temp_vect)"))
-    }
-  } else {
-    stop("prop_scale should be a scalar, vector, or matrix")
   }
 
   swap_mat <- matrix(NA,3,num_cyc)
@@ -382,6 +387,7 @@ par_temper <- function(theta0,
       swap_mat[3,cc] <- 0
     }
   }
-  output <- list(chains=chains,swap_mat=swap_mat)
+  output <- list(chains=chains,swap_mat=swap_mat,inputs=inputs)
+  class(output) <- "par_temper"
   return(output)
 }
