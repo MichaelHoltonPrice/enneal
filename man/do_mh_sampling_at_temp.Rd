@@ -6,8 +6,8 @@
 \usage{
 do_mh_sampling_at_temp(
   init,
+  neg_log_cost_func = NA,
   num_samp = NA,
-  neg_log_obj_func = NA,
   temp = NA,
   prop_scale = NA,
   save_theta = NA,
@@ -18,10 +18,10 @@ do_mh_sampling_at_temp(
 \item{init}{The initializing object (either a parameter vector or a chain
 created by a previous call to do_mh_sampling_at_temp).}
 
-\item{num_samp}{The number of samples to make.}
-
-\item{neg_log_obj_func}{The function that calculates the negative log of the
+\item{neg_log_cost_func}{The function that calculates the negative log of the
 function being sampled.}
+
+\item{num_samp}{The number of samples to make.}
 
 \item{temp}{The temperature}
 
@@ -33,7 +33,7 @@ vector, theta, or a scalar that is used for all parameters).}
 values (assumed False if not input). Cannot be over-ridden for continuing
 chains.}
 
-\item{...}{Variables required by neg_log_obj_func.}
+\item{...}{Variables required by neg_log_cost_func.}
 }
 \value{
 A list-like object of class "mh_chain" with sampling information

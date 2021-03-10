@@ -9,9 +9,9 @@
 #'
 #' @param init The initializing object (either a parameter vector or a chain
 #'   created by a previous call to do_mh_sampling_at_temp).
-#' @param num_samp The number of samples to make.
 #' @param neg_log_cost_func The function that calculates the negative log of the
 #'   function being sampled.
+#' @param num_samp The number of samples to make.
 #' @param temp The temperature
 #' @param prop_scale The standard deviation(s) to use for the proposal
 #'   distribution (either a vector that is the same length as the parameter
@@ -23,8 +23,8 @@
 #' @return A list-like object of class "mh_chain" with sampling information
 #' @export
 do_mh_sampling_at_temp <- function(init,
-                           num_samp=NA,
                            neg_log_cost_func=NA,
+                           num_samp=NA,
                            temp=NA,
                            prop_scale=NA,
                            save_theta=NA,
@@ -125,18 +125,13 @@ do_mh_sampling_at_temp <- function(init,
       num_samp <- init$num_samp
     }
 
-    if (is.na(num_samp)) {
-      num_samp <- init$num_samp
-    }
-
-
     # The temperature can always be over-ridden
     if(is.na(temp)) {
       temp <- init$temp
     }
 
     # The proposal scale can always be over-ridden
-    if(any(is.na(temp))) {
+    if(any(is.na(prop_scale))) {
       prop_scale <- init$prop_scale
     }
 
@@ -151,7 +146,6 @@ do_mh_sampling_at_temp <- function(init,
     } else {
       stop("save_theta should not be input for continuing chains.")
     }
-
   }
 
   # accept_vect is a vector of length num_samp that records whether each sample
@@ -168,6 +162,10 @@ do_mh_sampling_at_temp <- function(init,
     theta_mat <- matrix(NA,length(theta0),num_samp)
   }
 
+  print("prop_scale:")
+  print(prop_scale)
+  print("eta:")
+  print(eta)
   for(n in 1:num_samp) {
     # Create a new proposal parameter
     theta_prop <- theta + rnorm(length(theta))*prop_scale
@@ -228,10 +226,12 @@ do_mh_sampling_at_temp <- function(init,
     # Not a new chain
 
     # Update modified values
+    init$eta <- eta
+    init$theta <- theta
     init$eta_best <- eta_best
     init$theta_best <- theta_best
     init$accept_vect <- c(init$accept_vect,accept_vect)
-    init$eta_vect <- c(init$eta_vect,accept_vect)
+    init$eta_vect <- c(init$eta_vect,eta_vect)
     init$num_samp_vect <- c(init$num_samp_vect,num_samp)
     return(init)
   }

@@ -28,8 +28,8 @@ x0_scalar <- 0
 # object, chain.
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_scalar,
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_scalar,
@@ -143,8 +143,8 @@ expect_equal(
 # involves an incorrect first input, is also thrown).
 expect_error(
   chain <- do_mh_sampling_at_temp("cannot_use_strings",
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_scalar,
@@ -178,8 +178,8 @@ expect_error(
 
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_scalar,
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   prop_scale=0.1,
                                   mu=mu_scalar,
                                   invCovMat=invCovMat_scalar,
@@ -188,8 +188,8 @@ expect_error(
 )
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_scalar,
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   temp=2,
                                   mu=mu_scalar,
                                   invCovMat=invCovMat_scalar,
@@ -199,8 +199,8 @@ expect_error(
 
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_scalar,
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   temp=2,
                                   prop_scale=c(0.1,0.2),
                                   mu=mu_scalar,
@@ -213,8 +213,8 @@ expect_error(
 infinity_func <- function(x){Inf}
 expect_error(
   chain <- do_mh_sampling_at_temp(0,
-                                  num_samp=400,
                                   neg_log_cost_func=infinity_func,
+                                  num_samp=400,
                                   temp=2,
                                   prop_scale=0.1,
                                   save_theta=TRUE),
@@ -357,8 +357,8 @@ x0_vector <- c(0,0)
 
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_vector,
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_vector,
@@ -466,8 +466,8 @@ expect_equal(
 # involves an incorrect first input, is also thrown).
 expect_error(
   chain <- do_mh_sampling_at_temp("cannot_use_strings",
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   temp=2,
                                   prop_scale=0.1,
                                   mu=mu_vector,
@@ -501,8 +501,8 @@ expect_error(
 
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_vector,
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   prop_scale=0.1,
                                   mu=mu_vector,
                                   invCovMat=invCovMat_vector,
@@ -511,8 +511,8 @@ expect_error(
 )
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_vector,
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   temp=2,
                                   mu=mu_vector,
                                   invCovMat=invCovMat_vector,
@@ -522,8 +522,8 @@ expect_error(
 
 expect_error(
   chain <- do_mh_sampling_at_temp(x0_vector,
-                                  num_samp=400,
                                   neg_log_cost_func=unnorm_neg_log_gauss_dens,
+                                  num_samp=400,
                                   temp=2,
                                   prop_scale=c(0.1,0.2,0.3),
                                   mu=mu_vector,
