@@ -7,10 +7,10 @@
 par_temper(
   theta0,
   neg_log_cost_func,
-  samps_per_cyc = NA,
-  temp_vect = NA,
-  prop_scale = NA,
-  num_cyc = NA,
+  samps_per_cyc = 200,
+  temp_vect = 10^(rev(seq(-1, 1, by = 0.1))),
+  prop_scale = 1,
+  num_cyc = 100,
   ...
 )
 }

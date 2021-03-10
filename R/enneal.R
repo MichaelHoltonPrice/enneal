@@ -162,10 +162,6 @@ do_mh_sampling_at_temp <- function(init,
     theta_mat <- matrix(NA,length(theta0),num_samp)
   }
 
-  print("prop_scale:")
-  print(prop_scale)
-  print("eta:")
-  print(eta)
   for(n in 1:num_samp) {
     # Create a new proposal parameter
     theta_prop <- theta + rnorm(length(theta))*prop_scale

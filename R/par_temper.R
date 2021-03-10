@@ -58,19 +58,15 @@
 #' @export
 par_temper <- function(theta0,
                        neg_log_cost_func,
-                       samps_per_cyc=NA,
-                       temp_vect=NA,
-                       prop_scale=NA,
-                       num_cyc=NA,
+                       samps_per_cyc=200,
+                       temp_vect=10^(rev(seq(-1,1,by=.1))),
+                       prop_scale=1,
+                       num_cyc=100,
                        ...) {
 
   chains = list()
   # prop_scale should be a scalar, a vector of length theta, or a matrix with
   # dimensions length theta x length temp_vect.
-  if (any(is.na(prop_scale))) {
-    stop("prop_scale must be input for new chains")
-  }
-
   if (is.vector(prop_scale)) {
     if(length(prop_scale) == 1) {
       # A scalar
@@ -93,8 +89,6 @@ par_temper <- function(theta0,
   swap_mat <- matrix(NA,3,num_cyc)
   # Iterate over number of cycles
   for (cc in 1:num_cyc) {
-    print("----")
-    print(cc)
     for (k in 1:length(temp_vect)) {
       if (cc == 1) {
         # Start new chains
@@ -112,12 +106,6 @@ par_temper <- function(theta0,
       }
     }
 
-#    plot(chains[[1]]$eta_vect)
-#    readline(prompt="Press [enter] to continue")
-#    for (k in 1:length(temp_vect)) {
-#      print(chains[[k]]$eta_best)
-#      print(chains[[k]]$eta_best)
-#    }
     # Randomly choose an adjacent pair of temperatures to attempt a swap
     k <- sample(1:(length(temp_vect)-1),1)
 
