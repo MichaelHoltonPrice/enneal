@@ -11,6 +11,7 @@ par_temper(
   temp_vect = 10^(rev(seq(-1, 1, by = 0.1))),
   prop_scale = 1,
   num_cyc = 100,
+  num_cores = NA,
   ...
 )
 }
@@ -30,6 +31,9 @@ length(theta), or a matrix with dimensions length(theta) by
 length(temp_vect).}
 
 \item{num_cyc}{Number of cycles (a swap is attempted after each cycle).}
+
+\item{num_cores}{Number of cores to use in parallel for loop (default: NA, no
+parallelization)}
 
 \item{...}{Variables required by neg_log_cost_func}
 }

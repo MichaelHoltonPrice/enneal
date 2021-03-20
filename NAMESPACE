@@ -2,3 +2,5 @@
 
 export(do_mh_sampling_at_temp)
 export(par_temper)
+import(doParallel)
+import(foreach)

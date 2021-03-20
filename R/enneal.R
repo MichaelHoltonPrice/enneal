@@ -284,6 +284,8 @@ do_mh_sampling_at_temp <- function(init,
 #'   length(theta), or a matrix with dimensions length(theta) by
 #'   length(temp_vect).
 #' @param num_cyc Number of cycles (a swap is attempted after each cycle).
+#' @param num_cores Number of cores to use in parallel for loop (default: NA, no
+#'   parallelization)
 #' @param ... Variables required by neg_log_cost_func
 #'
 #' @return An object of class \code{par_temper} that consists of (a) chains (the
@@ -292,6 +294,8 @@ do_mh_sampling_at_temp <- function(init,
 
 #' @author Michael Holton Price <MichaelHoltonPrice@@gmail.com>
 #'
+#' @import doParallel
+#' @import foreach
 #' @export
 par_temper <- function(theta0,
                        neg_log_cost_func,
@@ -299,6 +303,7 @@ par_temper <- function(theta0,
                        temp_vect=10^(rev(seq(-1,1,by=.1))),
                        prop_scale=1,
                        num_cyc=100,
+                       num_cores=NA,
                        ...) {
 
   inputs <- list(theta0=theta0,
@@ -329,22 +334,54 @@ par_temper <- function(theta0,
   }
 
   swap_mat <- matrix(NA,3,num_cyc)
+
+  # If multiple cores should be used, register them.
+  if (!is.na(num_cores)) {
+    doParallel::registerDoParallel(num_cores)
+  }
+
   # Iterate over number of cycles
   for (cc in 1:num_cyc) {
-    for (k in 1:length(temp_vect)) {
-      if (cc == 1) {
-        # Start new chains
-        chains[[k]] <-
-        do_mh_sampling_at_temp(theta0,
-                               num_samp=samps_per_cyc,
-                               neg_log_cost_func=neg_log_cost_func,
-                               temp=temp_vect[k],
-                               prop_scale=prop_scale[,k],
-                               save_theta=T,
-                               ...)
+    if (cc == 1) {
+      # Start new chains
+      if (is.na(num_cores)) {
+        # Start new chains using a conventional for loop
+        for (k in 1:length(temp_vect)) {
+          chains[[k]] <-
+            do_mh_sampling_at_temp(theta0,
+                                   num_samp=samps_per_cyc,
+                                   neg_log_cost_func=neg_log_cost_func,
+                                   temp=temp_vect[k],
+                                   prop_scale=prop_scale[,k],
+                                   save_theta=T,
+                                   ...)
+        }
       } else {
-        # Extend chains for this cycle
-        chains[[k]] <- do_mh_sampling_at_temp(chains[[k]],...)
+        # Start new chains using a parallel for loop
+        chains <-
+          foreach(k=1:length(temp_vect)) %dopar% {
+            do_mh_sampling_at_temp(theta0,
+                                   num_samp=samps_per_cyc,
+                                   neg_log_cost_func=neg_log_cost_func,
+                                   temp=temp_vect[k],
+                                   prop_scale=prop_scale[,k],
+                                   save_theta=T,
+                                   ...)
+          }
+      }
+    } else {
+      # Extend chains
+      if (is.na(num_cores)) {
+        # Extend chains using a conventional for loop
+        for (k in 1:length(temp_vect)) {
+          chains[[k]] <- do_mh_sampling_at_temp(chains[[k]],...)
+        }
+      } else {
+        # Extend chains using a parallel for loop
+        chains <-
+          foreach(k=1:length(temp_vect)) %dopar% {
+            do_mh_sampling_at_temp(chains[[k]],...)
+          }
       }
     }
 
